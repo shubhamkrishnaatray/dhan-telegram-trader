@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: dhan-telegram-trader
+    env: python
+    buildCommand: ""
+    startCommand: python main.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: 8020657949:AAFli0g5mVC17Xm8DLgAmF2REpQqhzOP6Ps
+      - key: DHAN_CLIENT_ID
+        value: 2508025232
+      - key: DHAN_ACCESS_TOKEN
+        value: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbkNvbnN1bWVyVHlwZSI6IlNFTEYiLCJwYXJ0bmVySWQiOiIiLCJkaGFuQ2xpZW50SWQiOiIyNTA4MDI1MjMyIiwid2ViaG9va1VybCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMDAvY2FsbGJhY2siLCJpc3MiOiJkaGFuIiwiZXhwIjoxNzU0MjEzNDAyfQ.n5e0GroctpYeROCffqg3hIxgxzlonhnTumOhkN6u1UokdjK6vitlVylG4m61_2fNh2Td0quiy8_mpEm1uENl_w
+      - key: TELEGRAM_CHANNEL_ID
+        value: -1002642795340
