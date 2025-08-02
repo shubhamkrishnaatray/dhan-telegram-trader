@@ -1,6 +1,6 @@
 import os
 import requests
-from telegram import Update, Bot
+from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 
 # Load credentials from environment variables
@@ -12,7 +12,7 @@ CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
 # Base URL for Dhan API
 DHAN_ORDER_URL = "https://api.dhan.co/orders"
 
-# Basic order function for Dhan
+# Function to place order via Dhan
 def place_dhan_order(action, symbol, quantity):
     headers = {
         "access-token": DHAN_ACCESS_TOKEN,
@@ -38,11 +38,11 @@ def place_dhan_order(action, symbol, quantity):
     response = requests.post(DHAN_ORDER_URL, headers=headers, json=order_payload)
     return response.json()
 
-# Telegram message handler
+# Handler for Telegram messages
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
     if not message or str(message.chat_id) != CHANNEL_ID:
-        return
+        return  # Only respond to authorized channel
 
     text = message.text.strip()
     try:
@@ -56,27 +56,19 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await message.reply_text(f"Order placed: {action.upper()} {symbol.upper()} x {quantity}")
         else:
             await message.reply_text(f"Order failed: {result}")
-
     except Exception as e:
         await message.reply_text(f"Error processing order: {e}")
 
-# Main function
+# App runner
 async def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
     await app.run_polling()
 
+# Entry point with nest_asyncio
 if __name__ == '__main__':
     import asyncio
+    import nest_asyncio
 
-    try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
-    except RuntimeError:
-        # For environments like Render or Jupyter where the loop is already running
-        import nest_asyncio
-        nest_asyncio.apply()
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
-
-
+    nest_asyncio.apply()
+    asyncio.run(main())
